@@ -3,8 +3,20 @@ const Resource = db.Resource;
 
 const getAll = async (req, res) => {
   try {
-    const resources = await Resource.findAll({ order: [['createdAt', 'DESC']] });
-    res.json(resources);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Resource.findAndCountAll({
+      order: [['createdAt', 'DESC']],
+      limit,
+      offset
+    });
+
+    res.json({
+      data: rows,
+      pagination: { page, limit, total: count, totalPages: Math.ceil(count / limit) }
+    });
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch resources.', message: error.message });
   }

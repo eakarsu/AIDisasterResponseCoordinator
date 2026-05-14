@@ -17,6 +17,30 @@ import SearchRescue from './pages/SearchRescue';
 import Infrastructure from './pages/Infrastructure';
 import ThreatAnalysis from './pages/ThreatAnalysis';
 import AICenter from './pages/AICenter';
+import AINewTools from './pages/AINewTools';
+import LiveMap from './pages/LiveMap';
+import CommanderBriefing from './pages/CommanderBriefing';
+import ExternalData from './pages/ExternalData';
+import MutualAid from './pages/MutualAid';
+import AAR from './pages/AAR';
+
+// // === Batch 02 Gaps & Frontend Mounts ===
+import CfRealTimeImpactForecasting from './pages/CfRealTimeImpactForecasting';
+import CfResourceConstrainedOptimization from './pages/CfResourceConstrainedOptimization';
+import CfVulnerabilityAnalysis from './pages/CfVulnerabilityAnalysis';
+import CfSupplyChainPrediction from './pages/CfSupplyChainPrediction';
+import CfRecoveryTrajectoryModeling from './pages/CfRecoveryTrajectoryModeling';
+import GapSupplyroutesLacksOptimizeSupplyDistribution from './pages/GapSupplyroutesLacksOptimizeSupplyDistribution';
+import GapDonationroutesLacksMatchDonationToNeed from './pages/GapDonationroutesLacksMatchDonationToNeed';
+import GapShelterroutesLacksOptimizeShelterAssignments from './pages/GapShelterroutesLacksOptimizeShelterAssignments';
+import GapVolunteerroutesLacksAiVolunteerMatching from './pages/GapVolunteerroutesLacksAiVolunteerMatching';
+import GapNoRealTimeCrisisCommandCenterDashboardSurfaceBeyond from './pages/GapNoRealTimeCrisisCommandCenterDashboardSurfaceBeyond';
+import GapLimitedMobileAppForFirstResponders from './pages/GapLimitedMobileAppForFirstResponders';
+import GapLimitedIntegrationWithEmergencyServices911FemaRedCro from './pages/GapLimitedIntegrationWithEmergencyServices911FemaRedCro';
+import GapNoSocialMediaMonitoringForCrisisInformation from './pages/GapNoSocialMediaMonitoringForCrisisInformation';
+import GapNoWebhooks from './pages/GapNoWebhooks';
+import GapNoPaymentBillingModuleForDonationsBeyondCrud from './pages/GapNoPaymentBillingModuleForDonationsBeyondCrud';
+import GapNoCalendarIntegration from './pages/GapNoCalendarIntegration';
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('token');
@@ -158,8 +182,32 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route path="/live-map" element={<ProtectedRoute><LiveMap /></ProtectedRoute>} />
+      <Route path="/briefing" element={<ProtectedRoute><CommanderBriefing /></ProtectedRoute>} />
+      <Route path="/external-data" element={<ProtectedRoute><ExternalData /></ProtectedRoute>} />
+      <Route path="/mutual-aid" element={<ProtectedRoute><MutualAid /></ProtectedRoute>} />
+      <Route path="/aar" element={<ProtectedRoute><AAR /></ProtectedRoute>} />
+      <Route path="/ai-new-tools" element={<ProtectedRoute><AINewTools /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    
+        {/* // === Batch 02 Gaps & Frontend Mounts === */}
+        <Route path="/cf/real-time-impact-forecasting" element={<CfRealTimeImpactForecasting />} />
+        <Route path="/cf/resource-constrained-optimization" element={<CfResourceConstrainedOptimization />} />
+        <Route path="/cf/vulnerability-analysis" element={<CfVulnerabilityAnalysis />} />
+        <Route path="/cf/supply-chain-prediction" element={<CfSupplyChainPrediction />} />
+        <Route path="/cf/recovery-trajectory-modeling" element={<CfRecoveryTrajectoryModeling />} />
+        <Route path="/gap/supplyroutes-lacks-optimize-supply-distribution" element={<GapSupplyroutesLacksOptimizeSupplyDistribution />} />
+        <Route path="/gap/donationroutes-lacks-match-donation-to-need" element={<GapDonationroutesLacksMatchDonationToNeed />} />
+        <Route path="/gap/shelterroutes-lacks-optimize-shelter-assignments" element={<GapShelterroutesLacksOptimizeShelterAssignments />} />
+        <Route path="/gap/volunteerroutes-lacks-ai-volunteer-matching" element={<GapVolunteerroutesLacksAiVolunteerMatching />} />
+        <Route path="/gap/no-real-time-crisis-command-center-dashboard-surface-beyond" element={<GapNoRealTimeCrisisCommandCenterDashboardSurfaceBeyond />} />
+        <Route path="/gap/limited-mobile-app-for-first-responders" element={<GapLimitedMobileAppForFirstResponders />} />
+        <Route path="/gap/limited-integration-with-emergency-services-911-fema-red-cro" element={<GapLimitedIntegrationWithEmergencyServices911FemaRedCro />} />
+        <Route path="/gap/no-social-media-monitoring-for-crisis-information" element={<GapNoSocialMediaMonitoringForCrisisInformation />} />
+        <Route path="/gap/no-webhooks" element={<GapNoWebhooks />} />
+        <Route path="/gap/no-payment-billing-module-for-donations-beyond-crud" element={<GapNoPaymentBillingModuleForDonationsBeyondCrud />} />
+        <Route path="/gap/no-calendar-integration" element={<GapNoCalendarIntegration />} />
+      </Routes>
   );
 }
 

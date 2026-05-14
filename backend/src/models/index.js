@@ -42,6 +42,7 @@ db.MedicalResource = require('./MedicalResource')(sequelize, Sequelize);
 db.SearchRescue = require('./SearchRescue')(sequelize, Sequelize);
 db.Infrastructure = require('./Infrastructure')(sequelize, Sequelize);
 db.ThreatAnalysis = require('./ThreatAnalysis')(sequelize, Sequelize);
+db.AiAnalysis = require('./AiAnalysis')(sequelize, Sequelize);
 
 // Associations
 db.Resource.belongsTo(db.Incident, { foreignKey: 'assignedIncidentId', as: 'incident' });

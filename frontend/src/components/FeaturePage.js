@@ -16,7 +16,10 @@ function FeaturePage({ title, apiService, columns, formFields, renderDetailConte
     try {
       setLoading(true);
       const res = await apiService.getAll();
-      setItems(res.data);
+      // Backend may return either an array or a paginated { data, pagination } shape
+      const payload = res.data;
+      const list = Array.isArray(payload) ? payload : (Array.isArray(payload?.data) ? payload.data : []);
+      setItems(list);
     } catch (err) {
       toast.error(`Failed to load ${title.toLowerCase()}`);
     } finally {

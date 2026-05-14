@@ -158,4 +158,35 @@ export const aiAPI = {
   searchStrategy: (data) => api.post('/ai/search-strategy', data),
 };
 
+export const mapAPI = {
+  getGeo: (params = {}) => api.get('/map/geo', { params }),
+  getBounds: () => api.get('/map/bounds'),
+};
+
+export const briefingAPI = {
+  generate: () => api.post('/briefing/commander'),
+  recent: (limit = 10) => api.get('/briefing/recent', { params: { limit } }),
+};
+
+export const externalDataAPI = {
+  usgsEarthquakes: (minMag = 2.5) => api.get('/external-data/usgs-earthquakes', { params: { minMag } }),
+  noaaAlerts: (area) => api.get('/external-data/noaa-alerts', { params: area ? { area } : {} }),
+  importNoaaAlerts: (area) => api.post('/external-data/import-noaa-alerts', area ? { area } : {}),
+};
+
+export const mutualAidAPI = {
+  list: (params = {}) => api.get('/mutual-aid', { params }),
+  create: (data) => api.post('/mutual-aid', data),
+  delete: (id) => api.delete(`/mutual-aid/${id}`),
+  match: () => api.post('/mutual-aid/match'),
+};
+
+export const aarAPI = {
+  list: (params = {}) => api.get('/aar', { params }),
+  start: (incident_id) => api.post('/aar/start', { incident_id }),
+  approve: (id, data) => api.post(`/aar/${id}/approve`, data),
+  finalize: (id) => api.post(`/aar/${id}/finalize`),
+  exportUrl: (id) => `/api/aar/${id}/export`,
+};
+
 export default api;

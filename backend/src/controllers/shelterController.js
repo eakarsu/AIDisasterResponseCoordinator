@@ -3,8 +3,20 @@ const Shelter = db.Shelter;
 
 const getAll = async (req, res) => {
   try {
-    const shelters = await Shelter.findAll({ order: [['createdAt', 'DESC']] });
-    res.json(shelters);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Shelter.findAndCountAll({
+      order: [['createdAt', 'DESC']],
+      limit,
+      offset
+    });
+
+    res.json({
+      data: rows,
+      pagination: { page, limit, total: count, totalPages: Math.ceil(count / limit) }
+    });
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch shelters.', message: error.message });
   }

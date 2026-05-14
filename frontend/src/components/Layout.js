@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FiHome, FiAlertTriangle, FiTruck, FiUsers, FiPackage, FiMap, FiClipboard, FiRadio, FiCloud, FiDollarSign, FiHeart, FiSearch, FiLayers, FiShield, FiCpu, FiLogOut, FiActivity } from 'react-icons/fi';
+import { FiHome, FiAlertTriangle, FiTruck, FiUsers, FiPackage, FiMap, FiClipboard, FiRadio, FiCloud, FiDollarSign, FiHeart, FiSearch, FiLayers, FiShield, FiCpu, FiLogOut, FiActivity, FiGlobe, FiFileText, FiShare2, FiBookOpen } from 'react-icons/fi';
 import '../App.css';
 
 const navItems = [
@@ -19,7 +19,13 @@ const navItems = [
   { path: '/search-rescue', label: 'Search & Rescue', icon: FiSearch },
   { path: '/infrastructure', label: 'Infrastructure', icon: FiLayers },
   { path: '/threat-analysis', label: 'Threat Analysis', icon: FiShield },
+  { path: '/live-map', label: 'Live Map', icon: FiGlobe },
+  { path: '/briefing', label: 'Commander Briefing', icon: FiBookOpen },
+  { path: '/external-data', label: 'External Data', icon: FiCloud },
+  { path: '/mutual-aid', label: 'Mutual Aid Board', icon: FiShare2 },
+  { path: '/aar', label: 'AAR Workflow', icon: FiFileText },
   { path: '/ai-center', label: 'AI Command Center', icon: FiCpu },
+  { path: '/ai-new-tools', label: 'AI New Tools', icon: FiCpu },
 ];
 
 function Layout({ children }) {
