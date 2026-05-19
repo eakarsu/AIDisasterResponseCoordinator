@@ -41,6 +41,7 @@ import GapNoSocialMediaMonitoringForCrisisInformation from './pages/GapNoSocialM
 import GapNoWebhooks from './pages/GapNoWebhooks';
 import GapNoPaymentBillingModuleForDonationsBeyondCrud from './pages/GapNoPaymentBillingModuleForDonationsBeyondCrud';
 import GapNoCalendarIntegration from './pages/GapNoCalendarIntegration';
+import CustomViewsPage from './pages/CustomViewsPage';
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('token');
@@ -188,6 +189,7 @@ function App() {
       <Route path="/mutual-aid" element={<ProtectedRoute><MutualAid /></ProtectedRoute>} />
       <Route path="/aar" element={<ProtectedRoute><AAR /></ProtectedRoute>} />
       <Route path="/ai-new-tools" element={<ProtectedRoute><AINewTools /></ProtectedRoute>} />
+      <Route path="/custom-views" element={<ProtectedRoute><CustomViewsPage /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     
         {/* // === Batch 02 Gaps & Frontend Mounts === */}

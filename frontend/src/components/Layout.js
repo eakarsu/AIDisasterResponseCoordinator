@@ -26,6 +26,7 @@ const navItems = [
   { path: '/aar', label: 'AAR Workflow', icon: FiFileText },
   { path: '/ai-center', label: 'AI Command Center', icon: FiCpu },
   { path: '/ai-new-tools', label: 'AI New Tools', icon: FiCpu },
+  { path: '/custom-views', label: 'Response Views', icon: FiLayers },
 ];
 
 function Layout({ children }) {

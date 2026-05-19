@@ -60,6 +60,12 @@ app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+// Health check (mounted BEFORE catch-all /api router which applies auth)
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+// Custom Response Views (mounted BEFORE other /api mounts and 404/error handlers)
+app.use('/api/custom-views', require('./routes/customViews'));
 app.use('/api/auth', authRoutes);
 app.use('/api/incidents', incidentRoutes);
 app.use('/api/resources', resourceRoutes);
