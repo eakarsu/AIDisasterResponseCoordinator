@@ -43,6 +43,17 @@ import GapNoPaymentBillingModuleForDonationsBeyondCrud from './pages/GapNoPaymen
 import GapNoCalendarIntegration from './pages/GapNoCalendarIntegration';
 import CustomViewsPage from './pages/CustomViewsPage';
 
+import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
+import CodexOperationsFeature from './pages/CodexOperationsFeature';
+
+// === EEWS — Early Warning ===
+import EewsSeismicFeedIngest from './pages/EewsSeismicFeedIngest';
+import EewsPWaveDetection from './pages/EewsPWaveDetection';
+import EewsTsunamiPropagation from './pages/EewsTsunamiPropagation';
+import EewsPopulationAlertRouter from './pages/EewsPopulationAlertRouter';
+import EewsSiren from './pages/EewsSiren';
+import EewsShakeAlertGateway from './pages/EewsShakeAlertGateway';
+
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('token');
   if (!token) {
@@ -54,6 +65,9 @@ function ProtectedRoute({ children }) {
 function App() {
   return (
     <Routes>
+        <Route path="/codex/custom-viz" element={<ProtectedRoute><CodexCustomVizFeature /></ProtectedRoute>} />
+        <Route path="/codex/operations" element={<ProtectedRoute><CodexOperationsFeature /></ProtectedRoute>} />
+
       <Route path="/" element={<Login />} />
       <Route
         path="/dashboard"
@@ -190,6 +204,14 @@ function App() {
       <Route path="/aar" element={<ProtectedRoute><AAR /></ProtectedRoute>} />
       <Route path="/ai-new-tools" element={<ProtectedRoute><AINewTools /></ProtectedRoute>} />
       <Route path="/custom-views" element={<ProtectedRoute><CustomViewsPage /></ProtectedRoute>} />
+      {/* === EEWS — Early Warning === */}
+      <Route path="/eews/seismic-feed-ingest" element={<ProtectedRoute><EewsSeismicFeedIngest /></ProtectedRoute>} />
+      <Route path="/eews/p-wave-detection" element={<ProtectedRoute><EewsPWaveDetection /></ProtectedRoute>} />
+      <Route path="/eews/tsunami-propagation" element={<ProtectedRoute><EewsTsunamiPropagation /></ProtectedRoute>} />
+      <Route path="/eews/population-alert-router" element={<ProtectedRoute><EewsPopulationAlertRouter /></ProtectedRoute>} />
+      <Route path="/eews/eew-siren" element={<ProtectedRoute><EewsSiren /></ProtectedRoute>} />
+      <Route path="/eews/shake-alert-gateway" element={<ProtectedRoute><EewsShakeAlertGateway /></ProtectedRoute>} />
+
       <Route path="*" element={<Navigate to="/" replace />} />
     
         {/* // === Batch 02 Gaps & Frontend Mounts === */}

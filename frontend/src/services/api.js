@@ -189,4 +189,78 @@ export const aarAPI = {
   exportUrl: (id) => `/api/aar/${id}/export`,
 };
 
+// ── EEWS (Early Warning) APIs ─────────────────────────────────────────────────
+
+export const eewsSeismicFeedAPI = {
+  getAll: (params = {}) => api.get('/eews/seismic-feed-ingest', { params }),
+  getById: (id) => api.get(`/eews/seismic-feed-ingest/${id}`),
+  create: (data) => api.post('/eews/seismic-feed-ingest', data),
+  update: (id, data) => api.put(`/eews/seismic-feed-ingest/${id}`, data),
+  delete: (id) => api.delete(`/eews/seismic-feed-ingest/${id}`),
+  count: (params = {}) => api.get('/eews/seismic-feed-ingest/count', { params }),
+  search: (q, params = {}) => api.get('/eews/seismic-feed-ingest/search', { params: { q, ...params } }),
+  stats: () => api.get('/eews/seismic-feed-ingest/stats/summary'),
+  ai: (verb, data = {}) => api.post(`/eews/seismic-feed-ingest/ai/${verb}`, data),
+};
+
+export const eewsPWaveAPI = {
+  getAll: (params = {}) => api.get('/eews/p-wave-detection', { params }),
+  getById: (id) => api.get(`/eews/p-wave-detection/${id}`),
+  create: (data) => api.post('/eews/p-wave-detection', data),
+  update: (id, data) => api.put(`/eews/p-wave-detection/${id}`, data),
+  delete: (id) => api.delete(`/eews/p-wave-detection/${id}`),
+  count: (params = {}) => api.get('/eews/p-wave-detection/count', { params }),
+  search: (q, params = {}) => api.get('/eews/p-wave-detection/search', { params: { q, ...params } }),
+  stats: () => api.get('/eews/p-wave-detection/stats/summary'),
+  ai: (verb, data = {}) => api.post(`/eews/p-wave-detection/ai/${verb}`, data),
+};
+
+export const eewsTsunamiAPI = {
+  getAll: (params = {}) => api.get('/eews/tsunami-propagation', { params }),
+  getById: (id) => api.get(`/eews/tsunami-propagation/${id}`),
+  create: (data) => api.post('/eews/tsunami-propagation', data),
+  update: (id, data) => api.put(`/eews/tsunami-propagation/${id}`, data),
+  delete: (id) => api.delete(`/eews/tsunami-propagation/${id}`),
+  count: (params = {}) => api.get('/eews/tsunami-propagation/count', { params }),
+  search: (q, params = {}) => api.get('/eews/tsunami-propagation/search', { params: { q, ...params } }),
+  stats: () => api.get('/eews/tsunami-propagation/stats/summary'),
+  ai: (verb, data = {}) => api.post(`/eews/tsunami-propagation/ai/${verb}`, data),
+};
+
+export const eewsPopAlertAPI = {
+  getAll: (params = {}) => api.get('/eews/population-alert-router', { params }),
+  getById: (id) => api.get(`/eews/population-alert-router/${id}`),
+  create: (data) => api.post('/eews/population-alert-router', data),
+  update: (id, data) => api.put(`/eews/population-alert-router/${id}`, data),
+  delete: (id) => api.delete(`/eews/population-alert-router/${id}`),
+  count: (params = {}) => api.get('/eews/population-alert-router/count', { params }),
+  search: (q, params = {}) => api.get('/eews/population-alert-router/search', { params: { q, ...params } }),
+  stats: () => api.get('/eews/population-alert-router/stats/summary'),
+  ai: (verb, data = {}) => api.post(`/eews/population-alert-router/ai/${verb}`, data),
+};
+
+export const eewsSirenAPI = {
+  getAll: (params = {}) => api.get('/eews/eew-siren', { params }),
+  getById: (id) => api.get(`/eews/eew-siren/${id}`),
+  create: (data) => api.post('/eews/eew-siren', data),
+  update: (id, data) => api.put(`/eews/eew-siren/${id}`, data),
+  delete: (id) => api.delete(`/eews/eew-siren/${id}`),
+  count: (params = {}) => api.get('/eews/eew-siren/count', { params }),
+  search: (q, params = {}) => api.get('/eews/eew-siren/search', { params: { q, ...params } }),
+  stats: () => api.get('/eews/eew-siren/stats/summary'),
+  ai: (verb, data = {}) => api.post(`/eews/eew-siren/ai/${verb}`, data),
+};
+
+export const eewsShakeAlertAPI = {
+  getAll: (params = {}) => api.get('/eews/shake-alert-gateway', { params }),
+  getById: (id) => api.get(`/eews/shake-alert-gateway/${id}`),
+  create: (data) => api.post('/eews/shake-alert-gateway', data),
+  update: (id, data) => api.put(`/eews/shake-alert-gateway/${id}`, data),
+  delete: (id) => api.delete(`/eews/shake-alert-gateway/${id}`),
+  count: (params = {}) => api.get('/eews/shake-alert-gateway/count', { params }),
+  search: (q, params = {}) => api.get('/eews/shake-alert-gateway/search', { params: { q, ...params } }),
+  stats: () => api.get('/eews/shake-alert-gateway/stats/summary'),
+  ai: (verb, data = {}) => api.post(`/eews/shake-alert-gateway/ai/${verb}`, data),
+};
+
 export default api;

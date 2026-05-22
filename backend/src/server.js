@@ -29,6 +29,14 @@ const externalDataRoutes = require('./routes/externalDataRoutes');
 const mutualAidRoutes = require('./routes/mutualAidRoutes');
 const aarRoutes = require('./routes/aarRoutes');
 
+// EEWS routes
+const eewsSeismicFeedIngest = require('./routes/eewsFeat_seismicFeedIngest');
+const eewsPWaveDetection = require('./routes/eewsFeat_pWaveDetection');
+const eewsTsunamiPropagation = require('./routes/eewsFeat_tsunamiPropagation');
+const eewsPopulationAlertRouter = require('./routes/eewsFeat_populationAlertRouter');
+const eewsEewSiren = require('./routes/eewsFeat_eewSiren');
+const eewsShakeAlertGateway = require('./routes/eewsFeat_shakeAlertGateway');
+
 const app = express();
 const PORT = process.env.BACKEND_PORT || 3001;
 
@@ -98,6 +106,14 @@ app.use('/api/briefing', briefingRoutes);
 app.use('/api/external-data', externalDataRoutes);
 app.use('/api/mutual-aid', mutualAidRoutes);
 app.use('/api/aar', aarRoutes);
+
+// EEWS mounts
+app.use('/api/eews/seismic-feed-ingest', eewsSeismicFeedIngest);
+app.use('/api/eews/p-wave-detection', eewsPWaveDetection);
+app.use('/api/eews/tsunami-propagation', eewsTsunamiPropagation);
+app.use('/api/eews/population-alert-router', eewsPopulationAlertRouter);
+app.use('/api/eews/eew-siren', eewsEewSiren);
+app.use('/api/eews/shake-alert-gateway', eewsShakeAlertGateway);
 
 // Health check
 app.get('/api/health', (req, res) => {

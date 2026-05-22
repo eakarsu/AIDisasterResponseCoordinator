@@ -44,6 +44,15 @@ db.Infrastructure = require('./Infrastructure')(sequelize, Sequelize);
 db.ThreatAnalysis = require('./ThreatAnalysis')(sequelize, Sequelize);
 db.AiAnalysis = require('./AiAnalysis')(sequelize, Sequelize);
 
+// EEWS models
+const eews = require('./eews')(sequelize, Sequelize);
+db.SeismicFeed = eews.SeismicFeed;
+db.PWaveEvent = eews.PWaveEvent;
+db.TsunamiModel = eews.TsunamiModel;
+db.AlertDispatch = eews.AlertDispatch;
+db.SirenActivation = eews.SirenActivation;
+db.ShakeAlertMessage = eews.ShakeAlertMessage;
+
 // Associations
 db.Resource.belongsTo(db.Incident, { foreignKey: 'assignedIncidentId', as: 'incident' });
 db.Incident.hasMany(db.Resource, { foreignKey: 'assignedIncidentId', as: 'resources' });

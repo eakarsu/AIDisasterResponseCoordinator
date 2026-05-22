@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FiHome, FiAlertTriangle, FiTruck, FiUsers, FiPackage, FiMap, FiClipboard, FiRadio, FiCloud, FiDollarSign, FiHeart, FiSearch, FiLayers, FiShield, FiCpu, FiLogOut, FiActivity, FiGlobe, FiFileText, FiShare2, FiBookOpen } from 'react-icons/fi';
+import { FiHome, FiAlertTriangle, FiTruck, FiUsers, FiPackage, FiMap, FiClipboard, FiRadio, FiCloud, FiDollarSign, FiHeart, FiSearch, FiLayers, FiShield, FiCpu, FiLogOut, FiActivity, FiGlobe, FiFileText, FiShare2, FiBookOpen, FiZap, FiDroplet, FiWifi, FiChevronDown, FiChevronRight } from 'react-icons/fi';
 import '../App.css';
 
 const navItems = [
@@ -29,9 +29,19 @@ const navItems = [
   { path: '/custom-views', label: 'Response Views', icon: FiLayers },
 ];
 
+const eewsNavItems = [
+  { path: '/eews/seismic-feed-ingest', label: 'Seismic Feed Ingest', icon: FiActivity },
+  { path: '/eews/p-wave-detection', label: 'P-Wave Detection', icon: FiZap },
+  { path: '/eews/tsunami-propagation', label: 'Tsunami Propagation', icon: FiDroplet },
+  { path: '/eews/population-alert-router', label: 'Population Alert Router', icon: FiUsers },
+  { path: '/eews/eew-siren', label: 'EEW Siren Network', icon: FiRadio },
+  { path: '/eews/shake-alert-gateway', label: 'ShakeAlert Gateway', icon: FiWifi },
+];
+
 function Layout({ children }) {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const [eewsOpen, setEewsOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -55,6 +65,28 @@ function Layout({ children }) {
               key={item.path}
               to={item.path}
               className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+            >
+              <item.icon className="nav-icon" />
+              <span>{item.label}</span>
+            </NavLink>
+          ))}
+
+          {/* Early Warning Section */}
+          <div
+            className="nav-link"
+            style={{ cursor: 'pointer', userSelect: 'none', borderLeft: '3px solid #f97316', marginTop: '0.5rem' }}
+            onClick={() => setEewsOpen(o => !o)}
+          >
+            <FiZap className="nav-icon" style={{ color: '#f97316' }} />
+            <span style={{ flex: 1, color: '#f97316', fontWeight: 600 }}>Early Warning</span>
+            {eewsOpen ? <FiChevronDown style={{ color: '#f97316' }} /> : <FiChevronRight style={{ color: '#f97316' }} />}
+          </div>
+          {eewsOpen && eewsNavItems.map(item => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+              style={{ paddingLeft: '2rem' }}
             >
               <item.icon className="nav-icon" />
               <span>{item.label}</span>
