@@ -5,21 +5,26 @@ const User = db.User;
 const generateToken = (user) => {
   return jwt.sign(
     { id: user.id, email: user.email, role: user.role },
-    process.env.JWT_SECRET || 'disaster-response-secret-key',
+    process.env.JWT_SECRET,
     { expiresIn: '24h' }
   );
 };
 
 const register = async (req, res) => {
   try {
-    const { email, password, name, role, department, phone } = req.body;
+    const { email, password, name, department, phone } = req.body;
+
+    if (!email || !name || !password || password.length < 12) {
+      return res.status(400).json({ error: 'A valid email, name, and password of at least 12 characters are required.' });
+    }
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ error: 'Email already registered.' });
     }
 
-    const user = await User.create({ email, password, name, role, department, phone });
+    // Public registration never grants incident-command privileges.
+    const user = await User.create({ email, password, name, role: 'volunteer', department, phone });
     const token = generateToken(user);
 
     res.status(201).json({ user, token });

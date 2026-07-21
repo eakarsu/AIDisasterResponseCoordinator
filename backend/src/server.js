@@ -28,6 +28,7 @@ const briefingRoutes = require('./routes/briefingRoutes');
 const externalDataRoutes = require('./routes/externalDataRoutes');
 const mutualAidRoutes = require('./routes/mutualAidRoutes');
 const aarRoutes = require('./routes/aarRoutes');
+const coordinationRoutes = require('./routes/coordinationRoutes');
 
 // EEWS routes
 const eewsSeismicFeedIngest = require('./routes/eewsFeat_seismicFeedIngest');
@@ -66,6 +67,13 @@ app.use(cors({
 
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+app.use('/api', (req, res, next) => {
+  const supported = ['/auth', '/coordination', '/health'];
+  if (supported.some(prefix => req.path.startsWith(prefix))) return next();
+  if (process.env.ENABLE_LEGACY_EMERGENCY_SURFACES === 'true' && process.env.NODE_ENV !== 'production') return next();
+  return res.status(404).json({ error: 'Legacy generated endpoint is outside the governed incident-command boundary' });
+});
 
 // Routes
 // Health check (mounted BEFORE catch-all /api router which applies auth)
@@ -106,6 +114,7 @@ app.use('/api/briefing', briefingRoutes);
 app.use('/api/external-data', externalDataRoutes);
 app.use('/api/mutual-aid', mutualAidRoutes);
 app.use('/api/aar', aarRoutes);
+app.use('/api/coordination', coordinationRoutes);
 
 // EEWS mounts
 app.use('/api/eews/seismic-feed-ingest', eewsSeismicFeedIngest);
@@ -129,49 +138,11 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error', message: err.message });
 });
 
-// Database sync and server start
-db.sequelize.sync()
-  .then(() => {
-    console.log('Database synced successfully');
-// // === Batch 02 Gaps & Frontend Mounts ===
-app.use('/api/gap-supplyroutes-lacks-optimize-supply-distribution', require('./routes/gap_supplyroutes_lacks_optimize_supply_distribution'));
-
-// // === Batch 02 Gaps & Frontend Mounts ===
-app.use('/api/gap-donationroutes-lacks-match-donation-to-need', require('./routes/gap_donationroutes_lacks_match_donation_to_need'));
-
-// // === Batch 02 Gaps & Frontend Mounts ===
-app.use('/api/gap-shelterroutes-lacks-optimize-shelter-assignments', require('./routes/gap_shelterroutes_lacks_optimize_shelter_assignments'));
-
-// // === Batch 02 Gaps & Frontend Mounts ===
-app.use('/api/gap-volunteerroutes-lacks-ai-volunteer-matching', require('./routes/gap_volunteerroutes_lacks_ai_volunteer_matching'));
-
-// // === Batch 02 Gaps & Frontend Mounts ===
-app.use('/api/gap-no-real-time-crisis-command-center-dashboard-surface-beyond', require('./routes/gap_no_real_time_crisis_command_center_dashboard_surface_beyond'));
-
-// // === Batch 02 Gaps & Frontend Mounts ===
-app.use('/api/gap-limited-mobile-app-for-first-responders', require('./routes/gap_limited_mobile_app_for_first_responders'));
-
-// // === Batch 02 Gaps & Frontend Mounts ===
-app.use('/api/gap-limited-integration-with-emergency-services-911-fema-red-cro', require('./routes/gap_limited_integration_with_emergency_services_911_fema_red_cro'));
-
-// // === Batch 02 Gaps & Frontend Mounts ===
-app.use('/api/gap-no-social-media-monitoring-for-crisis-information', require('./routes/gap_no_social_media_monitoring_for_crisis_information'));
-
-// // === Batch 02 Gaps & Frontend Mounts ===
-app.use('/api/gap-no-webhooks', require('./routes/gap_no_webhooks'));
-
-// // === Batch 02 Gaps & Frontend Mounts ===
-app.use('/api/gap-no-payment-billing-module-for-donations-beyond-crud', require('./routes/gap_no_payment_billing_module_for_donations_beyond_crud'));
-
-// // === Batch 02 Gaps & Frontend Mounts ===
-app.use('/api/gap-no-calendar-integration', require('./routes/gap_no_calendar_integration'));
-
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('Failed to sync database:', err);
+// Schema changes are applied explicitly by scripts/migrate.sh; startup is non-destructive.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
   });
+}
 
 module.exports = app;

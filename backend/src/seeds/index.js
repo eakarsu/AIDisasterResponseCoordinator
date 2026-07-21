@@ -1,6 +1,10 @@
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../../.env') });
 
+if (process.env.CONFIRM_DEMO_SEED !== 'yes') {
+  throw new Error('Refusing destructive seed without CONFIRM_DEMO_SEED=yes');
+}
+
 const db = require('../models');
 
 const seed = async () => {

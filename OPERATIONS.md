@@ -1,0 +1,7 @@
+# Operations and safety boundary
+
+`start.sh` starts only this repository's already-installed processes and stops only the PIDs it created. It never kills ports, installs packages, creates a database, migrates, or seeds. Run `scripts/bootstrap.sh` once, configure `.env`, and apply versioned SQL with `scripts/migrate.sh`. The legacy demo seed is destructive and requires `CONFIRM_DEMO_SEED=yes`; never use it with operational data.
+
+The governed `/api/coordination` workflow stores incident facts, source confidence and timestamps, idempotent needs, resource-assignment state transitions, command approval, handoffs, and immutable audit events. Generated, EEWS, model, and legacy emergency endpoints are quarantined by default and forbidden in production; `gap-*` endpoints are no longer mounted. Provider URLs are configuration placeholders: GIS, weather, government alerting, CAD/911, radio, messaging, inventory, and offline-mobile adapters require contracts, credentials, accreditation, and field testing before use.
+
+This software is not an accredited emergency dispatch or public-warning system. It must not automatically dispatch resources, activate sirens, or publish alerts. Operators must verify source authority, reconcile conflicts, and approve every action through the incident-command chain. Surge, radio-dead-zone, stale-feed, duplicate/offline replay, accessibility, and disaster-recovery exercises remain mandatory before operational deployment.
