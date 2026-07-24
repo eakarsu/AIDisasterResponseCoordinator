@@ -12,8 +12,8 @@ function Login() {
   const navigate = useNavigate();
 
   const fillCredentials = () => {
-    setEmail('admin@disaster-response.gov');
-    setPassword('Admin123!');
+    setEmail(process.env.REACT_APP_DEMO_EMAIL || '');
+    setPassword(process.env.REACT_APP_DEMO_PASSWORD || '');
   };
 
   const handleSubmit = async (e) => {

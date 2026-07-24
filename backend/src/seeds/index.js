@@ -7,6 +7,12 @@ if (process.env.CONFIRM_DEMO_SEED !== 'yes') {
 
 const db = require('../models');
 
+function requireDemoPassword() {
+  const password = process.env.DEMO_PASSWORD || process.env.SEED_DEMO_PASSWORD || process.env.DEMO_SEED_PASSWORD || '';
+  if (password.length < 12 || password.length > 1024) throw new Error('DEMO_PASSWORD must contain 12-1024 characters');
+  return password;
+}
+
 const seed = async () => {
   try {
     await db.sequelize.authenticate();
@@ -18,7 +24,7 @@ const seed = async () => {
     // ===== USERS =====
     const admin = await db.User.create({
       email: 'admin@disaster-response.gov',
-      password: 'Admin123!',
+      password: requireDemoPassword(),
       name: 'Director Sarah Mitchell',
       role: 'admin',
       department: 'Emergency Management',
@@ -27,20 +33,20 @@ const seed = async () => {
     });
 
     const users = await db.User.bulkCreate([
-      { email: 'jthompson@disaster-response.gov', password: 'Pass123!', name: 'James Thompson', role: 'coordinator', department: 'Field Operations', phone: '202-555-0101', isActive: true },
-      { email: 'mchen@disaster-response.gov', password: 'Pass123!', name: 'Maria Chen', role: 'coordinator', department: 'Logistics', phone: '202-555-0102', isActive: true },
-      { email: 'rwilson@disaster-response.gov', password: 'Pass123!', name: 'Robert Wilson', role: 'coordinator', department: 'Medical Response', phone: '202-555-0103', isActive: true },
-      { email: 'kbrown@disaster-response.gov', password: 'Pass123!', name: 'Karen Brown', role: 'volunteer', department: 'Search & Rescue', phone: '202-555-0104', isActive: true },
-      { email: 'djohnson@disaster-response.gov', password: 'Pass123!', name: 'David Johnson', role: 'volunteer', department: 'Communications', phone: '202-555-0105', isActive: true },
-      { email: 'lgarcia@disaster-response.gov', password: 'Pass123!', name: 'Lisa Garcia', role: 'coordinator', department: 'Shelter Management', phone: '202-555-0106', isActive: true },
-      { email: 'mlee@disaster-response.gov', password: 'Pass123!', name: 'Michael Lee', role: 'volunteer', department: 'Transportation', phone: '202-555-0107', isActive: true },
-      { email: 'spatel@disaster-response.gov', password: 'Pass123!', name: 'Sunita Patel', role: 'coordinator', department: 'Public Health', phone: '202-555-0108', isActive: true },
-      { email: 'tanderson@disaster-response.gov', password: 'Pass123!', name: 'Tom Anderson', role: 'volunteer', department: 'Infrastructure', phone: '202-555-0109', isActive: true },
-      { email: 'jrivera@disaster-response.gov', password: 'Pass123!', name: 'Jennifer Rivera', role: 'volunteer', department: 'Donations', phone: '202-555-0110', isActive: true },
-      { email: 'bsmith@disaster-response.gov', password: 'Pass123!', name: 'Brian Smith', role: 'coordinator', department: 'Hazmat', phone: '202-555-0111', isActive: true },
-      { email: 'awright@disaster-response.gov', password: 'Pass123!', name: 'Angela Wright', role: 'volunteer', department: 'Mental Health', phone: '202-555-0112', isActive: true },
-      { email: 'cmartin@disaster-response.gov', password: 'Pass123!', name: 'Carlos Martin', role: 'volunteer', department: 'Fire Services', phone: '202-555-0113', isActive: true },
-      { email: 'nkim@disaster-response.gov', password: 'Pass123!', name: 'Nancy Kim', role: 'coordinator', department: 'Planning', phone: '202-555-0114', isActive: true },
+      { email: 'jthompson@disaster-response.gov', password: requireDemoPassword(), name: 'James Thompson', role: 'coordinator', department: 'Field Operations', phone: '202-555-0101', isActive: true },
+      { email: 'mchen@disaster-response.gov', password: requireDemoPassword(), name: 'Maria Chen', role: 'coordinator', department: 'Logistics', phone: '202-555-0102', isActive: true },
+      { email: 'rwilson@disaster-response.gov', password: requireDemoPassword(), name: 'Robert Wilson', role: 'coordinator', department: 'Medical Response', phone: '202-555-0103', isActive: true },
+      { email: 'kbrown@disaster-response.gov', password: requireDemoPassword(), name: 'Karen Brown', role: 'volunteer', department: 'Search & Rescue', phone: '202-555-0104', isActive: true },
+      { email: 'djohnson@disaster-response.gov', password: requireDemoPassword(), name: 'David Johnson', role: 'volunteer', department: 'Communications', phone: '202-555-0105', isActive: true },
+      { email: 'lgarcia@disaster-response.gov', password: requireDemoPassword(), name: 'Lisa Garcia', role: 'coordinator', department: 'Shelter Management', phone: '202-555-0106', isActive: true },
+      { email: 'mlee@disaster-response.gov', password: requireDemoPassword(), name: 'Michael Lee', role: 'volunteer', department: 'Transportation', phone: '202-555-0107', isActive: true },
+      { email: 'spatel@disaster-response.gov', password: requireDemoPassword(), name: 'Sunita Patel', role: 'coordinator', department: 'Public Health', phone: '202-555-0108', isActive: true },
+      { email: 'tanderson@disaster-response.gov', password: requireDemoPassword(), name: 'Tom Anderson', role: 'volunteer', department: 'Infrastructure', phone: '202-555-0109', isActive: true },
+      { email: 'jrivera@disaster-response.gov', password: requireDemoPassword(), name: 'Jennifer Rivera', role: 'volunteer', department: 'Donations', phone: '202-555-0110', isActive: true },
+      { email: 'bsmith@disaster-response.gov', password: requireDemoPassword(), name: 'Brian Smith', role: 'coordinator', department: 'Hazmat', phone: '202-555-0111', isActive: true },
+      { email: 'awright@disaster-response.gov', password: requireDemoPassword(), name: 'Angela Wright', role: 'volunteer', department: 'Mental Health', phone: '202-555-0112', isActive: true },
+      { email: 'cmartin@disaster-response.gov', password: requireDemoPassword(), name: 'Carlos Martin', role: 'volunteer', department: 'Fire Services', phone: '202-555-0113', isActive: true },
+      { email: 'nkim@disaster-response.gov', password: requireDemoPassword(), name: 'Nancy Kim', role: 'coordinator', department: 'Planning', phone: '202-555-0114', isActive: true },
     ], { individualHooks: true });
     console.log('Users seeded.');
 
@@ -325,7 +331,7 @@ const seed = async () => {
     console.log('Threat Analyses seeded.');
 
     console.log('\n=== Seeding Complete ===');
-    console.log('Admin user: admin@disaster-response.gov / Admin123!');
+    console.log('Demo login users provisioned from the local environment.');
     console.log('All models seeded with 15 records each.\n');
 
     process.exit(0);
