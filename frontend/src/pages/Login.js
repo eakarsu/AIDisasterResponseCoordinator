@@ -67,11 +67,11 @@ function Login() {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
+          <button type="submit" className="btn btn-primary btn-full" disabled={loading} aria-label="Sign In">
             {loading ? 'Authenticating...' : 'Sign In to Command Center'}
           </button>
           <button type="button" className="fill-credentials-btn" onClick={fillCredentials}>
-            Fill Demo Credentials
+            Auto Fill Demo Credentials
           </button>
         </form>
         <div className="login-footer">
