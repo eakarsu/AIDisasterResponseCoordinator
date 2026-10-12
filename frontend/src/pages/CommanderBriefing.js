@@ -3,6 +3,7 @@ import Layout from '../components/Layout';
 import { briefingAPI } from '../services/api';
 import { FiBookOpen, FiCpu, FiClock } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import AIReport from '../components/AIReport';
 
 function CommanderBriefing() {
   const [briefing, setBriefing] = useState(null);
@@ -11,8 +12,8 @@ function CommanderBriefing() {
 
   const loadRecent = async () => {
     try {
-      const r = await briefingAPI.recent(10);
-      setRecent(r.data?.data || []);
+      const r = await briefingAPI.recent(20);
+      setRecent(Array.isArray(r.data?.data) ? r.data.data : []);
     } catch (_) {}
   };
 
@@ -30,46 +31,6 @@ function CommanderBriefing() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const renderBriefing = (b) => {
-    if (!b) return null;
-    if (b.raw) return <pre style={{ whiteSpace: 'pre-wrap' }}>{b.raw}</pre>;
-    return (
-      <div>
-        {b.headline && <h2 style={{ marginTop: 0 }}>{b.headline}</h2>}
-        {b.summary && <p>{b.summary}</p>}
-        {b.highest_priority_incidents && b.highest_priority_incidents.length > 0 && (
-          <div style={{ marginTop: 16 }}>
-            <h3>Highest Priority Incidents</h3>
-            {b.highest_priority_incidents.map((i, idx) => (
-              <div key={idx} style={{ background: '#fef2f2', borderLeft: '4px solid #dc2626', padding: 8, marginBottom: 8 }}>
-                <strong>#{i.id} (sev {i.severity}):</strong> {i.title}<br />
-                <small>{i.rationale}</small>
-              </div>
-            ))}
-          </div>
-        )}
-        {b.resource_posture && <p><strong>Resource Posture:</strong> {b.resource_posture}</p>}
-        {b.recommended_actions && b.recommended_actions.length > 0 && (
-          <div style={{ marginTop: 12 }}>
-            <h3>Recommended Actions</h3>
-            <ul>{b.recommended_actions.map((a, i) => <li key={i}>{a}</li>)}</ul>
-          </div>
-        )}
-        {b.risk_alerts && b.risk_alerts.length > 0 && (
-          <div style={{ marginTop: 12 }}>
-            <h3>Risk Alerts</h3>
-            <ul>{b.risk_alerts.map((a, i) => <li key={i} style={{ color: '#b91c1c' }}>{a}</li>)}</ul>
-          </div>
-        )}
-        {b.shift_handoff_notes && (
-          <div style={{ marginTop: 12, padding: 12, background: '#eff6ff', borderRadius: 6 }}>
-            <strong>Shift Handoff:</strong> {b.shift_handoff_notes}
-          </div>
-        )}
-      </div>
-    );
   };
 
   return (
@@ -92,7 +53,7 @@ function CommanderBriefing() {
                 <div style={{ marginBottom: 12, color: '#64748b' }}>
                   Generated at {briefing.generated_at} · {briefing.incident_count} active incidents
                 </div>
-                {renderBriefing(briefing.briefing)}
+                <AIReport response={briefing.briefing} title="Commander briefing" />
               </>
             ) : (
               <p style={{ color: '#64748b' }}>Click "Generate New Briefing" to compile a real-time incident summary using AI.</p>

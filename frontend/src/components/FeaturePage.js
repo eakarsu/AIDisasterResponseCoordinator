@@ -34,7 +34,7 @@ function FeaturePage({ title, apiService, columns, formFields, renderDetailConte
   const handleRowClick = async (item) => {
     try {
       const res = await apiService.getById(item.id);
-      setSelectedItem(res.data);
+      setSelectedItem(res.data?.data || res.data);
       setShowDetail(true);
     } catch {
       setSelectedItem(item);

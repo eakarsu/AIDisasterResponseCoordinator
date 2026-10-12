@@ -9,11 +9,19 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [demoNotice, setDemoNotice] = useState('');
   const navigate = useNavigate();
 
   const fillCredentials = () => {
-    setEmail(process.env.REACT_APP_DEMO_EMAIL || '');
-    setPassword(process.env.REACT_APP_DEMO_PASSWORD || '');
+    const demoEmail = process.env.REACT_APP_DEMO_EMAIL;
+    const demoPassword = process.env.REACT_APP_DEMO_PASSWORD;
+    if (!demoEmail || !demoPassword) {
+      setDemoNotice('Demo credentials are not configured for this login screen. Ask an administrator for the configured demo account.');
+      return;
+    }
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+    setDemoNotice('Demo credentials filled. Select Sign In when ready.');
   };
 
   const handleSubmit = async (e) => {
@@ -71,8 +79,9 @@ function Login() {
             {loading ? 'Authenticating...' : 'Sign In to Command Center'}
           </button>
           <button type="button" className="fill-credentials-btn" onClick={fillCredentials}>
-            Auto Fill Demo Credentials
+            Fill Demo Credentials
           </button>
+          {demoNotice && <p role="status">{demoNotice}</p>}
         </form>
         <div className="login-footer">
           <p>Authorized Personnel Only | FEMA Certified Platform</p>

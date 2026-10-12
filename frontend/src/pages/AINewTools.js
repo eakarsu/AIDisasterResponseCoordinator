@@ -1,3 +1,5 @@
+import AIReport from '../components/AIReport';
+import CompleteAIExamples, { AIRequiredButton } from "../components/CompleteAIExamples";
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import Layout from '../components/Layout';
@@ -146,27 +148,29 @@ const tools = [
   },
 ];
 
-function ResultBlock({ label, data }) {
-  if (!data) return null;
-  let content;
-  if (typeof data === 'string') {
-    content = data;
-  } else {
-    try { content = JSON.stringify(data, null, 2); } catch { content = String(data); }
+
+const exampleValues = (tool, variant) => Object.fromEntries(tool.fields.map((field) => {
+  if (field.plain) {
+    const plain = [field.placeholder, field.placeholder, field.placeholder][variant];
+    if (field.name === 'population_at_risk') return [field.name, String([12000, 8500, 21000][variant])];
+    if (field.name === 'time_horizon_hours') return [field.name, String([24, 48, 72][variant])];
+    return [field.name, plain.replace(/^e\.g\.\s*/, '') + ['', ' — alternate planning scenario', ' — high impact planning scenario'][variant]];
   }
-  return (
-    <div className="ai-output">
-      <div className="ai-output-header">
-        <FiZap className="ai-output-icon" />
-        <h3>AI Result: {label}</h3>
-      </div>
-      <div className="ai-output-body">
-        <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace', fontSize: 13, lineHeight: 1.5, margin: 0 }}>
-          {content}
-        </pre>
-      </div>
-    </div>
-  );
+  try {
+    const scrub = (value) => {
+      if (Array.isArray(value)) return value.map(scrub);
+      if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).filter(([key]) => !/(?:^|_)(?:id|ids)$/i.test(key)).map(([key, item]) => [key, scrub(item)]));
+      return typeof value === 'number' ? Math.round(value * [1, 1.25, 1.5][variant]) : value;
+    };
+    return [field.name, JSON.stringify(scrub(JSON.parse(field.placeholder)), null, 2)];
+  } catch {
+    return [field.name, field.placeholder];
+  }
+}));
+const toolPresets = (tool) => ['Coastal response', 'Regional response', 'High impact response'].map((label, variant) => ({ label, values: exampleValues(tool, variant) }));
+
+function ResultBlock({ label, data }) {
+  return <AIReport response={data} title={label} />;
 }
 
 function AINewTools() {
@@ -275,13 +279,13 @@ function AINewTools() {
             <div className="ai-workspace-content">
               <div className="ai-form-panel">
                 <h3 className="ai-form-title">Input Parameters</h3>
-                <form onSubmit={handleSubmit} className="ai-form">
+                <CompleteAIExamples busy={loading} context="Disaster planning review" presets={toolPresets(activeTool)}><form onSubmit={handleSubmit} className="ai-form">
                   {activeTool.fields.map((field) => (
                     <div key={field.name} className="form-group">
                       <label className="form-label">
                         {field.label}{field.optional ? '' : ' *'}
                       </label>
-                      <textarea
+                      <textarea required={!field.optional} data-ai-field={field.name}
                         className="form-textarea"
                         value={formData[field.name] || ''}
                         onChange={(e) => setFormData({ ...formData, [field.name]: e.target.value })}
@@ -306,7 +310,7 @@ function AINewTools() {
                     </div>
                   )}
 
-                  <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
+                  <AIRequiredButton data-ai-generate type="submit" className="btn btn-primary btn-full" disabled={loading}>
                     {loading ? (
                       <span className="btn-loading">
                         <span className="loading-spinner-small"></span>
@@ -315,8 +319,8 @@ function AINewTools() {
                     ) : (
                       <span><FiZap /> Run AI Analysis</span>
                     )}
-                  </button>
-                </form>
+                  </AIRequiredButton>
+                </form></CompleteAIExamples>
               </div>
 
               <div className="ai-result-panel">

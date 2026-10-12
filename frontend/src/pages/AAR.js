@@ -3,6 +3,7 @@ import Layout from '../components/Layout';
 import { aarAPI, incidentAPI } from '../services/api';
 import { FiFileText, FiPlus, FiCheckCircle, FiDownload } from 'react-icons/fi';
 import { toast } from 'react-toastify';
+import AIReport from '../components/AIReport';
 
 function AAR() {
   const [aars, setAars] = useState([]);
@@ -17,8 +18,8 @@ function AAR() {
 
   const load = async (page = 1) => {
     try {
-      const r = await aarAPI.list({ page, limit: 10 });
-      setAars(r.data?.data || []);
+      const r = await aarAPI.list({ page, limit: 20 });
+      setAars(Array.isArray(r.data?.data) ? r.data.data : []);
       setPagination(r.data?.pagination || { page: 1, totalPages: 1 });
     } catch (_) {
       toast.error('Failed to load AARs');
@@ -27,7 +28,7 @@ function AAR() {
 
   useEffect(() => {
     load(1);
-    incidentAPI.getAll().then((r) => setIncidents(r.data?.data || r.data || [])).catch(() => {});
+    incidentAPI.getAll().then((r) => setIncidents(Array.isArray(r.data) ? r.data : Array.isArray(r.data?.data) ? r.data.data : [])).catch(() => {});
   }, []);
 
   const start = async () => {
@@ -105,15 +106,7 @@ function AAR() {
                 </div>
                 <p style={{ color: '#64748b' }}>Status: <strong>{selected.status}</strong></p>
 
-                {selected.report && (
-                  <div style={{ marginTop: 12, maxHeight: 300, overflow: 'auto' }}>
-                    <h3>Executive Summary</h3>
-                    <p>{selected.report.executiveSummary}</p>
-                    {selected.report.strengths && (<><h4>Strengths</h4><ul>{selected.report.strengths.map((s, i) => <li key={i}>{s}</li>)}</ul></>)}
-                    {selected.report.areasForImprovement && (<><h4>Improvements</h4><ul>{selected.report.areasForImprovement.map((s, i) => <li key={i}>{s}</li>)}</ul></>)}
-                    {selected.report.recommendations && (<><h4>Recommendations</h4><ul>{selected.report.recommendations.map((s, i) => <li key={i}>{s}</li>)}</ul></>)}
-                  </div>
-                )}
+                {selected.report && <AIReport response={selected.report.report || selected.report} title={`AAR #${selected.id}`} />}
 
                 <h3 style={{ marginTop: 16 }}>Approvals</h3>
                 {(selected.approvals || []).length === 0 ? <p style={{ color: '#64748b' }}>None yet.</p> : (

@@ -1,3 +1,5 @@
+import FormattedAIReport from "./FormattedAIReport";
+import CompleteAIExamples from "./CompleteAIExamples";
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import Layout from './Layout';
@@ -16,6 +18,9 @@ function EEWSFeaturePage({ title, apiService, columns, formFields, aiVerbs, icon
   const [aiInput, setAiInput] = useState('{}');
   const [aiResult, setAiResult] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
+
+  const aiReferenceKey = ({ 'Seismic Feed Ingest': 'feedId', 'P-Wave Detection': 'eventId', 'ShakeAlert Gateway': 'messageId', 'EEW Siren Network': 'sirenRecordId', 'Population Alert Router': 'dispatchId', 'Tsunami Propagation': 'modelId' })[title];
+  const aiPresets = ['First saved record', 'Second saved record', 'Third saved record'].map((label, index) => ({ label, values: items[index]?.id != null && aiReferenceKey ? { aiInput: JSON.stringify({ [aiReferenceKey]: items[index].id }, null, 2) } : {} }));
 
   const color = accentColor || '#f97316';
 
@@ -332,16 +337,17 @@ function EEWSFeaturePage({ title, apiService, columns, formFields, aiVerbs, icon
 
                 {activeVerb && (
                   <div>
-                    <div className="form-group">
+                    <CompleteAIExamples context={`${title} ${activeVerb}`} presets={aiPresets}><div className="form-group">
                       <label className="form-label">JSON Input (optional — add feedId, eventId, etc.)</label>
                       <textarea
                         className="form-textarea"
+                        data-ai-field="aiInput"
                         rows={4}
                         value={aiInput}
                         onChange={e => setAiInput(e.target.value)}
                         style={{ fontFamily: 'monospace', fontSize: '0.85rem' }}
                       />
-                    </div>
+                    </div></CompleteAIExamples>
                     <button
                       className="btn btn-primary"
                       style={{ background: color, borderColor: color }}
@@ -356,12 +362,7 @@ function EEWSFeaturePage({ title, apiService, columns, formFields, aiVerbs, icon
                 {aiResult && (
                   <div style={{ marginTop: '1rem' }}>
                     <label className="form-label">AI Response</label>
-                    <pre style={{
-                      background: '#0d1117', color: '#e6edf3', padding: '1rem', borderRadius: '8px',
-                      fontSize: '0.82rem', overflow: 'auto', maxHeight: '340px', whiteSpace: 'pre-wrap'
-                    }}>
-                      {JSON.stringify(aiResult, null, 2)}
-                    </pre>
+                    <FormattedAIReport response={aiResult} />
                   </div>
                 )}
               </div>

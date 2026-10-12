@@ -34,7 +34,10 @@ function Dashboard() {
         if (f.api) {
           try {
             const res = await f.api.getAll();
-            results[f.key] = Array.isArray(res.data) ? res.data.length : 0;
+            const payload = res.data;
+            results[f.key] = Number.isFinite(Number(payload?.pagination?.total))
+              ? Number(payload.pagination.total)
+              : Array.isArray(payload) ? payload.length : Array.isArray(payload?.data) ? payload.data.length : 0;
           } catch {
             results[f.key] = 0;
           }

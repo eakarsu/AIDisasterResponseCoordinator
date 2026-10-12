@@ -1,3 +1,5 @@
+import AIReport from '../components/AIReport';
+import CompleteAIExamples, { AIRequiredButton } from "../components/CompleteAIExamples";
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import Layout from '../components/Layout';
@@ -65,110 +67,30 @@ const formConfigs = {
   ],
 };
 
+const scenarioFacts = [
+  { label: 'Coastal flood drill', hazard: 'Coastal flood following a Category 3 hurricane', region: 'Illustrative coastal county', population: '12,000 people in the low-lying zone', capacity: '2,400 verified shelter spaces', details: 'Flood water has blocked two evacuation routes; one shelter capacity report is awaiting confirmation.', resources: 'Four buses, two rescue boats, three medical teams and a staffed operations center.', history: 'A previous storm closed the eastern bridge for 18 hours; verify current road and river gauge reports.', casualties: 'Exercise estimate: 12 injured; actual triage counts require field confirmation.', terrain: 'Low-lying neighborhoods, blocked bridge approaches and partially flooded roads.' },
+  { label: 'Wildfire drill', hazard: 'Wind-driven wildfire', region: 'Illustrative foothills district', population: '8,500 residents in the warning area', capacity: '1,600 verified shelter spaces', details: 'Fire spread is approaching two neighborhoods; wind direction and road access remain uncertain.', resources: 'Three engines, two transport teams, one mobile medical unit and a mutual aid request.', history: 'Last season, smoke reduced visibility on the northern access road; confirm current conditions.', casualties: 'Exercise estimate: 6 injured; actual triage counts require field confirmation.', terrain: 'Steep foothills, narrow roads and smoke-obscured evacuation corridors.' },
+  { label: 'Earthquake drill', hazard: 'Magnitude 6.8 earthquake', region: 'Illustrative urban district', population: '21,000 people in the affected zone', capacity: '3,100 verified shelter spaces', details: 'Several buildings report structural damage; power is interrupted and a transit tunnel is closed.', resources: 'Five search teams, two ambulances, three generators and a pending engineering assessment.', history: 'Older masonry blocks have a documented vulnerability; confirm damage against current inspections.', casualties: 'Exercise estimate: 25 injured; actual triage counts require field confirmation.', terrain: 'Dense streets, damaged masonry and limited heavy-equipment access.' },
+];
+const fieldExample = (name, facts) => ({
+  threatType: facts.hazard, region: facts.region, description: facts.details, historicalData: facts.history,
+  area: facts.region, population: facts.population, hazardType: facts.hazard, shelterCapacity: facts.capacity,
+  location: facts.region, disasterType: facts.hazard, reportedInjuries: facts.casualties,
+  disasterContext: facts.details, availableResources: facts.resources, activeIncidents: facts.details,
+  priorities: 'Protect life, verify access routes and shelter capacity, then assign transport and medical teams.',
+  incidentDetails: `${facts.hazard} in ${facts.region}. ${facts.details}`,
+  timeline: 'Hour 0: alert received. Hour 1: field assessment requested. Hour 2: operations briefing and resource review.',
+  resourcesUsed: facts.resources, outcomes: 'Exercise outcome pending; verify all field reports before publishing.',
+  lessonsLearned: 'Confirm source timestamps, keep an alternate route, and assign owners to unresolved requests.',
+  casualties: facts.casualties, availableMedical: 'Two ambulances, one mobile medical unit and a hospital status check pending.',
+  conditions: facts.details, searchArea: facts.terrain,
+  missingPersons: 'Exercise scenario: three people reported missing; last known locations require dispatcher confirmation.',
+  terrain: facts.terrain, availableTeams: facts.resources,
+})[name];
+const modulePresets = (module) => scenarioFacts.map((facts) => ({ label: facts.label, values: Object.fromEntries((formConfigs[module] || []).map((field) => [field.name, fieldExample(field.name, facts)])) }));
+
 function AIOutputDisplay({ data, label }) {
-  if (!data) return null;
-
-  const parseAIContent = (content) => {
-    if (typeof content !== 'string') return content;
-    try {
-      return JSON.parse(content);
-    } catch {
-      return content;
-    }
-  };
-
-  const renderValue = (value, depth = 0) => {
-    if (value === null || value === undefined) return <span className="ai-null">N/A</span>;
-    if (typeof value === 'boolean') return <span className={`ai-bool ${value ? 'ai-true' : 'ai-false'}`}>{value ? 'Yes' : 'No'}</span>;
-    if (typeof value === 'number') return <span className="ai-number">{value.toLocaleString()}</span>;
-    if (typeof value === 'string') {
-      if (value.length > 200) {
-        return <p className="ai-text-long">{value}</p>;
-      }
-      return <span className="ai-text">{value}</span>;
-    }
-    if (Array.isArray(value)) {
-      return (
-        <div className="ai-array">
-          {value.map((item, i) => (
-            <div key={i} className="ai-array-item">
-              <span className="ai-bullet">●</span>
-              <div className="ai-array-content">{renderValue(item, depth + 1)}</div>
-            </div>
-          ))}
-        </div>
-      );
-    }
-    if (typeof value === 'object') {
-      return (
-        <div className={`ai-object ${depth > 0 ? 'ai-nested' : ''}`}>
-          {Object.entries(value).map(([k, v]) => (
-            <div key={k} className="ai-field">
-              <div className="ai-field-label">{k.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase())}</div>
-              <div className="ai-field-value">{renderValue(v, depth + 1)}</div>
-            </div>
-          ))}
-        </div>
-      );
-    }
-    return String(value);
-  };
-
-  const content = typeof data === 'object' ? data : parseAIContent(data);
-
-  if (typeof content === 'string') {
-    const sections = content.split(/\n(?=#{1,3}\s|[A-Z][a-z]+:|\*\*)/);
-    return (
-      <div className="ai-output">
-        <div className="ai-output-header">
-          <FiZap className="ai-output-icon" />
-          <h3>AI Analysis: {label}</h3>
-        </div>
-        <div className="ai-output-body">
-          {sections.map((section, i) => (
-            <div key={i} className="ai-text-section">
-              {section.split('\n').map((line, j) => {
-                if (line.startsWith('###')) return <h5 key={j} className="ai-heading-3">{line.replace(/^###\s*/, '')}</h5>;
-                if (line.startsWith('##')) return <h4 key={j} className="ai-heading-2">{line.replace(/^##\s*/, '')}</h4>;
-                if (line.startsWith('#')) return <h3 key={j} className="ai-heading-1">{line.replace(/^#\s*/, '')}</h3>;
-                if (line.startsWith('- ') || line.startsWith('* ')) return <div key={j} className="ai-array-item"><span className="ai-bullet">●</span><span>{line.replace(/^[-*]\s*/, '')}</span></div>;
-                if (line.match(/^\d+\.\s/)) return <div key={j} className="ai-array-item"><span className="ai-bullet-num">{line.match(/^\d+/)[0]}</span><span>{line.replace(/^\d+\.\s*/, '')}</span></div>;
-                if (line.includes(':**') || line.match(/^[A-Z][a-zA-Z\s]+:/)) {
-                  const [label, ...rest] = line.split(':');
-                  return <div key={j} className="ai-field"><div className="ai-field-label">{label.replace(/\*\*/g, '')}</div><div className="ai-field-value">{rest.join(':').replace(/\*\*/g, '')}</div></div>;
-                }
-                if (line.trim()) return <p key={j} className="ai-paragraph">{line}</p>;
-                return null;
-              })}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="ai-output">
-      <div className="ai-output-header">
-        <FiZap className="ai-output-icon" />
-        <h3>AI Analysis: {label}</h3>
-      </div>
-      <div className="ai-output-body">
-        {typeof content === 'object' && !Array.isArray(content) ? (
-          Object.entries(content).map(([key, value]) => (
-            <div key={key} className="ai-section">
-              <h4 className="ai-section-title">{key.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase())}</h4>
-              <div className="ai-section-content">{renderValue(value)}</div>
-            </div>
-          ))
-        ) : (
-          <div className="ai-section">
-            <div className="ai-section-content">{renderValue(content)}</div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+  return <AIReport response={data} title={label} />;
 }
 
 function AICenter() {
@@ -245,12 +167,12 @@ function AICenter() {
             <div className="ai-workspace-content">
               <div className="ai-form-panel">
                 <h3 className="ai-form-title">Input Parameters</h3>
-                <form onSubmit={handleSubmit} className="ai-form">
+                <CompleteAIExamples busy={loading} context="Disaster planning review" presets={modulePresets(activeModule.key)}><form onSubmit={handleSubmit} className="ai-form">
                   {(formConfigs[activeModule.key] || []).map(field => (
                     <div key={field.name} className="form-group">
                       <label className="form-label">{field.label}</label>
                       {field.type === 'textarea' ? (
-                        <textarea
+                        <textarea required={Boolean(field.required)} data-ai-field={field.name}
                           className="form-textarea"
                           value={formData[field.name] || ''}
                           onChange={e => setFormData({ ...formData, [field.name]: e.target.value })}
@@ -258,7 +180,7 @@ function AICenter() {
                           rows={3}
                         />
                       ) : (
-                        <input
+                        <input required={Boolean(field.required)} data-ai-field={field.name}
                           type="text"
                           className="form-input"
                           value={formData[field.name] || ''}
@@ -268,7 +190,7 @@ function AICenter() {
                       )}
                     </div>
                   ))}
-                  <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
+                  <AIRequiredButton data-ai-generate type="submit" className="btn btn-primary btn-full" disabled={loading}>
                     {loading ? (
                       <span className="btn-loading">
                         <span className="loading-spinner-small"></span>
@@ -277,8 +199,8 @@ function AICenter() {
                     ) : (
                       <span><FiZap /> Run AI Analysis</span>
                     )}
-                  </button>
-                </form>
+                  </AIRequiredButton>
+                </form></CompleteAIExamples>
               </div>
 
               <div className="ai-result-panel">

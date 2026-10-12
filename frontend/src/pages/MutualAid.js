@@ -18,7 +18,7 @@ function MutualAid() {
   const load = async (page = 1) => {
     try {
       const r = await mutualAidAPI.list({ page, limit: 20, ...(filter ? { kind: filter } : {}) });
-      setPosts(r.data?.data || []);
+      setPosts(Array.isArray(r.data?.data) ? r.data.data : []);
       setPagination(r.data?.pagination || { page: 1, totalPages: 1 });
     } catch (_) {
       toast.error('Failed to load posts');
@@ -52,8 +52,9 @@ function MutualAid() {
     setLoading(true);
     try {
       const r = await mutualAidAPI.match();
-      setMatches(r.data?.matches || []);
-      toast.success(`${r.data?.matches?.length || 0} matches`);
+      const loadedMatches = Array.isArray(r.data?.matches) ? r.data.matches : [];
+      setMatches(loadedMatches);
+      toast.success(`${loadedMatches.length} matches`);
     } catch (e) {
       toast.error(e.response?.data?.message || 'Match failed');
     } finally { setLoading(false); }
