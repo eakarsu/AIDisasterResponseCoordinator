@@ -1,11 +1,22 @@
 const db = require('../models');
 const Incident = db.Incident;
+const { filterRecords } = require('../routes/wave33b');
 
 const getAll = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const offset = (page - 1) * limit;
+
+    // Search/filter (?q=, ?type=, ?status=, ?severity=) reuses the tested wave filter.
+    if (req.query.q !== undefined || req.query.type !== undefined || req.query.status !== undefined || req.query.severity !== undefined) {
+      const all = await Incident.findAll({ order: [['createdAt', 'DESC']] });
+      const filtered = filterRecords(all.map((row) => (typeof row.toJSON === 'function' ? row.toJSON() : row)), req.query);
+      return res.json({
+        data: filtered.slice(offset, offset + limit),
+        pagination: { page, limit, total: filtered.length, totalPages: Math.ceil(filtered.length / limit) }
+      });
+    }
 
     const { count, rows } = await Incident.findAndCountAll({
       order: [['createdAt', 'DESC']],

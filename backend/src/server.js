@@ -68,6 +68,9 @@ app.use(cors({
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Wave 33B: authenticated tasks, incident export, deterministic-first AI summaries (mounted before the legacy-surface gate)
+app.use('/api', require('./routes/wave33b').createWaveRouter({ authenticate: require('./middleware/auth') }));
+
 app.use('/api', (req, res, next) => {
   const supported = ['/auth', '/coordination', '/health', '/report-workspace'];
   if (supported.some(prefix => req.path.startsWith(prefix))) return next();
